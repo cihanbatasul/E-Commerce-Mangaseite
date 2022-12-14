@@ -1,0 +1,14 @@
+.blah {
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
+
+.link-light{
+    text-decoration: none;
+    
+}
+
+.btn-primary{
+    color: white;
+}
