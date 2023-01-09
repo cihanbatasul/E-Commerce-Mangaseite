@@ -1,0 +1,7 @@
+amazon Bewertungssystem verstehen
+Produktseite für jedes Produkt
+Bewertungsfunktion einbauen
+Produktseite Filteroption
+Kategorien für Produktseite
+
+Produktseite -> Componentfunktion statt hardcode oder so

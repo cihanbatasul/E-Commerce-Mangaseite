@@ -1,0 +1,191 @@
+.customContainer {
+  background-color: #23252b;
+
+}
+
+.navbar {
+  font-family: hind, simhei, verdana, Helvetica, sans-serif;
+  color: #000;
+}
+
+.nav-link {
+  padding: 1rem;
+  margin-left: 1.5rem;
+}
+
+.nav-link:hover {
+  color: #00dc64;
+}
+
+
+.c-item {
+  height: 480px;
+}
+
+.c-img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-categories {
+  font-family: hind, simhei, verdana, Helvetica, sans-serif;
+  color: #dadada;
+}
+
+.header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-categories-heading {
+  display: inline-block;
+  position: relative;
+  transition: ease-in;
+}
+
+.product-categories-heading:hover {
+  cursor: pointer;
+}
+
+.product-categories-heading::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #0087ca;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.product-categories-heading:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.nav-link {
+  color: #dadada;
+  height: inherit;
+}
+
+.navbar-brand {
+  color: #dadada;
+  margin-left: 7rem;
+  transition: fill .2s ease;
+  height: 100%;
+}
+
+.navbar-brand:hover {
+  color: white;
+
+}
+
+.product-popular {
+  background-color: #23252b;
+}
+
+
+.blah {
+  background-color: #23252b;
+}
+
+.testcard {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.most-popular {
+
+  background-color: #23252b;
+}
+
+.product-card-img {
+  width: 100%;
+  height: 15vw;
+  object-fit: cover;
+}
+
+.link-light {
+  text-decoration: none;
+
+}
+
+.maaan {
+  margin-top: 10rem;
+}
+
+.one {
+  background-color: blue;
+}
+
+.two {
+  background-color: rgb(156, 64, 102);
+}
+
+.three {
+  background-color: rgb(0, 255, 128);
+}
+
+.loginPic {
+  margin-top: 10rem;
+}
+
+.loginForm {
+  margin-top: 5rem;
+}
+
+.signupRow {
+  width: 50%;
+}
+
+.signupRow>button {
+  margin-left: 50%;
+}
+
+.reg_submit {
+  width: 50%;
+  margin-left: 50%;
+}
+
+/* regestrieren.php */
+
+.reg-container {
+  margin-top: 5rem;
+}
+
+/* search bar */
+.search-click {
+  border: 1px solid #ccc;
+  outline: none;
+  background-size: 22px;
+  background-position: 13px;
+  border-radius: 10px;
+  width: 50px;
+  height: 50px;
+  padding: 25px;
+  transition: all 0.5s;
+}
+
+.search-click:focus {
+  width: 300px;
+  padding-left: 50px;
+}
+
+.search-click {
+  position: relative;
+  overflow: hidden;
+  height: 50px;
+}
+
+.search-click input {
+  background: transparent;
+  border: 1px solid #ccc;
+  outline: none;
+  position: absolute;
+  width: 300px;
+  height: 50px;
+  left: 0%;
+  padding: 10px;
+}
