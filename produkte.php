@@ -241,6 +241,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
       background-color: transparent;
     }
 
+    .card-body-buttons {
+      display: flex;
+      align-items: center;
+
+      justify-content: space-around;
+    }
+
     .productimg {
       width: 100%;
       height: 15vw;
@@ -302,6 +309,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
 
     .filter-method>.btn-close {
       margin-left: 1rem;
+    }
+
+
+    @media (max-width: 768px) {
+
+
+      .card-text {
+        max-height: 0px;
+      }
+
+      .productimg {
+        width: 100%;
+        min-height: 40vw;
+        object-fit: cover;
+      }
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
@@ -588,7 +610,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
               <div class="card  p-3 mb-5 bg-body rounded">
                 <!--<button type="submit" name="product-pic"><img src="pics/// echo $record['picUrl'] " class="card-img-top product-card-img" alt="..."></button><-->
                 <input type="image" src="pics/<?php echo $record['picUrl'] ?>" alt="submit" name="product-pic" class="productimg" />
-                <div class="card-body">
+                <div class="card-body ">
                   <h5 class="card-title"><?php echo $record['name']; ?></h5>
                   <input type="hidden" name="name" value="<?php echo $product_name ?>">
                   <input type="hidden" name="product_id_cart" value="<?php echo $product_id ?>">
@@ -646,7 +668,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
               </table>
 
 
-              <div class="card-body">
+              <div class="card-body card-body-buttons">
                 <?php
                 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
                 ?>
@@ -664,6 +686,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
                 <input type="hidden" name="beschreibung" value="<?php echo $product_beschreibung ?>">
                 <input type="hidden" name="stückzahl" value="<?php echo $product_stückzahl ?>">
                 <button type="submit" id="details-button" class="btn btn-primary buttons" name="product_page_name" value="<?php echo $record['id'] ?>">Details</button>
+
             </form>
           </div>
       </div>

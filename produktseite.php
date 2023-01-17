@@ -18,6 +18,7 @@ if (!isset($_SESSION['loggedin'])) {
 include('./classes/DB.php');
 include('./classes/ProductController.php');
 include('./classes/UserController.php');
+include('./classes/APIController.php');
 // Erstellen einer neuen DB-Verbindungen anhand des Konstruktors der "DB"-Klasse
 // Wenn die Verbindung fehlgeschlagen ist, gibt das IF-Statement eine Fehlermeldung aus
 try {
@@ -30,10 +31,13 @@ try {
 
 // Wenn auf der Produktseite bei einem Produkt auf "Details" geklickt wird
 $productController = new ProductController($database);
+if (isset($_SESSION["product_page_id"])) {
+  $data = $productController->getProductById($_SESSION["product_page_id"]);
+  $_SESSION['product_img'] = $data[0]['picUrl'];
+}
 
-$data = $productController->getProductById($_SESSION["product_page_id"]);
 
-$_SESSION['product_img'] = $data[0]['picUrl'];
+
 
 if (isset($_SESSION['loggedin'])) {
 
@@ -120,6 +124,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
     header("location: search.php");
     exit;
   }
+}
+
+// API
+$apiController = new APIController('https://api.mangadex.org');
+$mangaData = $apiController->requestData("Tokyo卍Revengers");
+$mangaID = $apiController->extractMangaIDs($mangaData);
+$ddd =  $apiController->getMangaChapters('8f8b7cb0-7109-46e8-b12c-0448a6453dfa');
+var_dump($mangaData);
+$mangaDaten = [];
+foreach ($ddd['data'] as $item) {
+  $title = $item['attributes']['title'];
+  $chapter = $item['attributes']['chapter'];
+  echo "Title: $title, Chapter: $chapter\n";
 }
 
 
@@ -498,163 +515,166 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
   <div class="container">
     <?php
 
+    if (isset($data)) {
 
-    foreach ($data as $record) {
 
-      $product_id = $record['id'];
-      $product_name = $record['name'];
-      $product_price = $record['preis'];
-      $product_img = $record['picUrl'];
-      $_SESSION['product_img'] = $product_img;
-      $product_stückzahl = $record['stückzahl'];
-      $product_beschreibung = $record['beschreibung'];
+      foreach ($data as $record) {
 
-      $num = $productController->getRating($product_id);
-      $numRating = $num["numRating"];
+        $product_id = $record['id'];
+        $product_name = $record['name'];
+        $product_price = $record['preis'];
+        $product_img = $record['picUrl'];
+        $_SESSION['product_img'] = $product_img;
+        $product_stückzahl = $record['stückzahl'];
+        $product_beschreibung = $record['beschreibung'];
+
+        $num = $productController->getRating($product_id);
+        $numRating = $num["numRating"];
 
     ?>
-      <div class="row mt-5 productRow">
+        <div class="row mt-5 productRow">
 
-        <!-- product pic -->
-        <div class=" col md-6 mt-3 pic-col sm">
+          <!-- product pic -->
+          <div class=" col md-6 mt-3 pic-col sm">
 
-        </div>
+          </div>
 
-        <div class="col md-6 mt-3">
+          <div class="col md-6 mt-3">
 
-          <card>
+            <card>
 
-            <h1>
-              <?php echo $product_name ?>
-            </h1>
+              <h1>
+                <?php echo $product_name ?>
+              </h1>
 
-            <p><?php echo $product_price ?> €</p>
+              <p><?php echo $product_price ?> €</p>
 
-            <p>
-              <span>
-                <?php echo $product_beschreibung ?>
-              </span>
-            </p>
-            <table class="table">
-              <tr>
-                <th scope="row">Rating:</th>
-                <td>
-                  <div class="star-rating">
-                    <ul class="list-inline">
-                      <?php
+              <p>
+                <span>
+                  <?php echo $product_beschreibung ?>
+                </span>
+              </p>
+              <table class="table">
+                <tr>
+                  <th scope="row">Rating:</th>
+                  <td>
+                    <div class="star-rating">
+                      <ul class="list-inline">
+                        <?php
 
-                      $start = 1;
+                        $start = 1;
 
-                      if ($numRating != NULL) {
+                        if ($numRating != NULL) {
 
-                        while ($start <= 5) {
+                          while ($start <= 5) {
 
-                          if ($numRating < $start) {
-                      ?>
+                            if ($numRating < $start) {
+                        ?>
 
-                            <li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+                              <li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+
+                            <?php
+
+                            } else {
+                            ?>
+
+                              <li class="list-inline-item"><i class="fa fa-star"></i></li>
 
                           <?php
 
-                          } else {
+                            }
+                            $start++;
+                          }
+                        } else {
                           ?>
 
-                            <li class="list-inline-item"><i class="fa fa-star"></i></li>
-
-                        <?php
-
-                          }
-                          $start++;
-                        }
-                      } else {
-                        ?>
-
-                        <span>Keine Bewertungen</span>
+                          <span>Keine Bewertungen</span>
 
                       <?php
+                        }
                       }
                       ?>
 
-                </td>
-                </ul>
-        </div>
-        </tr>
-        </table>
-        <form method="post">
-          <div class="col">
-            <?php
-            if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
-            ?>
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login-prompt">In den Warenkorb</button>
-
-            <?php
-            } else {
-            ?>
-              <button type="submit" class="btn btn-primary buttons" name="add"><a href="#" class="link-light">In den Warenkorb</a></button>
-            <?php
-            }
-            ?>
-
-            <?php
-            if (isset($_SESSION['loggedin'])  && $didUserRate === true) {
-            ?>
-              <button class="btn btn-primary disabled" type="button" aria-disabled="true" name="rate">Bereits bewertet</button>
-            <?php
-            } else if (!isset($_SESSION['loggedin'])) {
-            ?>
-              <button class="btn btn-primary disabled" type="button" aria-disabled="true" name="rate">Einloggen, um zu bewerten</button>
-            <?php
-            } else {
-            ?>
-              <button class="btn btn-primary" type="submit" name="rate">Bewerten</button>
-            <?php
-            }
-            ?>
+                  </td>
+                  </ul>
           </div>
-        </form>
-        </card>
+          </tr>
+          </table>
+          <form method="post">
+            <div class="col">
+              <?php
+              if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
+              ?>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login-prompt">In den Warenkorb</button>
 
-        <?php
-        if ($rating === true) {
-        ?>
-          <div class="container rating">
-            <form method="post">
-              <h3>Bewertung</h3>
+              <?php
+              } else {
+              ?>
+                <button type="submit" class="btn btn-primary buttons" name="add"><a href="#" class="link-light">In den Warenkorb</a></button>
+              <?php
+              }
+              ?>
 
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="bewertung" id="inlineRadio1" value="1">
-                <label class="form-check-label" for="inlineRadio1"></label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="bewertung" id="inlineRadio2" value="2">
-                <label class="form-check-label" for="inlineRadio2"></label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="bewertung" id="inlineRadio3" value="3">
-                <label class="form-check-label" for="inlineRadio3"></label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="bewertung" id="inlineRadio3" value="4">
-                <label class="form-check-label" for="inlineRadio3"></label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="bewertung" id="inlineRadio3" value="5">
-                <label class="form-check-label" for="inlineRadio3"></label>
-              </div>
-
-
-              <div class="mb-3">
-                <label for="comment" class="form-label">Kommentar</label>
-                <textarea class="form-control" id="comment" rows="3" name="rating_comment"></textarea>
-              </div>
-              <button type="submit" name="submit_rating" class="btn btn-primary">Speichern</button>
-              <button type="submit" name="cancel_rating" class="btn btn-primary">Abbrechen</button>
-          </div>
+              <?php
+              if (isset($_SESSION['loggedin'])  && $didUserRate === true) {
+              ?>
+                <button class="btn btn-primary disabled" type="button" aria-disabled="true" name="rate">Bereits bewertet</button>
+              <?php
+              } else if (!isset($_SESSION['loggedin'])) {
+              ?>
+                <button class="btn btn-primary disabled" type="button" aria-disabled="true" name="rate">Einloggen, um zu bewerten</button>
+              <?php
+              } else {
+              ?>
+                <button class="btn btn-primary" type="submit" name="rate">Bewerten</button>
+              <?php
+              }
+              ?>
+            </div>
           </form>
-        <?php
-        }
-        ?>
-      </div>
+          </card>
+
+          <?php
+          if ($rating === true) {
+          ?>
+            <div class="container rating">
+              <form method="post">
+                <h3>Bewertung</h3>
+
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="bewertung" id="inlineRadio1" value="1">
+                  <label class="form-check-label" for="inlineRadio1"></label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="bewertung" id="inlineRadio2" value="2">
+                  <label class="form-check-label" for="inlineRadio2"></label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="bewertung" id="inlineRadio3" value="3">
+                  <label class="form-check-label" for="inlineRadio3"></label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="bewertung" id="inlineRadio3" value="4">
+                  <label class="form-check-label" for="inlineRadio3"></label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="bewertung" id="inlineRadio3" value="5">
+                  <label class="form-check-label" for="inlineRadio3"></label>
+                </div>
+
+
+                <div class="mb-3">
+                  <label for="comment" class="form-label">Kommentar</label>
+                  <textarea class="form-control" id="comment" rows="3" name="rating_comment"></textarea>
+                </div>
+                <button type="submit" name="submit_rating" class="btn btn-primary">Speichern</button>
+                <button type="submit" name="cancel_rating" class="btn btn-primary">Abbrechen</button>
+            </div>
+            </form>
+          <?php
+          }
+          ?>
+        </div>
 
   </div>
 
@@ -664,6 +684,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
 <?php
     }
 ?>
+
+<!-- Review -->
+
+
+
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 <footer class="text-center text-white">
   <div class="row">
     <div class="social-media-icons">

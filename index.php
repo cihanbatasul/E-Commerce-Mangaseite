@@ -157,6 +157,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     .categoryItems {
       margin-left: 5rem;
+      margin-bottom: 3rem;
       width: 200px;
       height: 200px;
       background-size: cover;
@@ -371,6 +372,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     .intro-text-cols {
       display: flex;
 
+    }
+
+    @media (max-width: 390px) {
+      .intro-text {}
     }
   </style>
 
@@ -759,6 +764,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
 
 
+    }
+
+    function load_search_autocomplete(query) {
+      if (query.length > 2) {
+        var form_data = new FormData();
+      } else {
+        document.getElementById('search_result').innerHTML = '';
+      }
     }
   </script>
 </body>
