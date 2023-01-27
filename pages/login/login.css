@@ -1,0 +1,81 @@
+ @import url('https://fonts.googleapis.com/css2?family=EB+Garamond&family=Rajdhani:wght@300;400&display=swap');
+
+ * {
+     font-family: 'Rajdhani', sans-serif;
+
+ }
+
+
+ html {
+     height: 100%;
+ }
+
+
+
+ body {
+     overflow-x: hidden;
+     background-color: #ffffff;
+     font-size: large;
+     min-height: 100%;
+     display: flex;
+     flex-direction: column;
+ }
+
+ .outermost-navdiv {
+     background-color: #ffff;
+ }
+
+ .navbar-brand>img {
+     width: 80px;
+     height: auto;
+ }
+
+ .nav {
+     padding-top: 0px;
+     padding-bottom: 0px;
+ }
+
+ .nav-link {
+     color: #284b63;
+     font-size: 1.15rem;
+ }
+
+ .nav-link:hover {
+
+     color: #00DC64;
+ }
+
+ /** Footer **/
+ footer {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     background-color: #0496ff;
+     margin-top: auto;
+ }
+
+ .social-media-icons>ul {
+     display: flex;
+     align-items: center;
+     flex-wrap: wrap;
+
+ }
+
+ .social-media-icons>ul>li {
+     color: white;
+     list-style: none;
+     margin: 1rem;
+     padding: 2rem;
+ }
+
+ .social-media-icons>ul>li:hover {
+
+     cursor: pointer;
+     transition: all 1s;
+     transform: translatey(-20%);
+
+ }
+
+ .fa-brands {
+     font-size: 2em;
+ }

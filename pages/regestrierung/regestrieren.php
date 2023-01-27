@@ -1,8 +1,9 @@
 <?php
 session_start();
 
-include('./classes/DB.php');
-include('./classes/UserController.php');
+include(__DIR__ . '/../../classes/DB.php');
+include(__DIR__ . '/../../classes/ProductController.php');
+include(__DIR__ . '/../../classes/UserController.php');
 
 if (isset($_SESSION["loggedin"]) && ($_SESSION["loggedin"] === true)) {
   header("location: index.php");
@@ -17,7 +18,7 @@ $userCreateSuccess = false;
 // Wenn die Verbindung fehlgeschlagen ist, gibt das IF-Statement eine Fehlermeldung aus
 try {
 
-  $database = new DB("localhost", "crud", "root", "");
+  $database = new DB("localhost", "crud", "root", "passwordForWebsite");
 } catch (PDOException $e) {
 
   die("ERROR: Verbindung konnte nicht aufgebaut werden. Grund: " . $e->getMessage());
@@ -60,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
   <title>Login Aufgabe</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
   <script src="https://kit.fontawesome.com/59e04dcbeb.js" crossorigin="anonymous"></script>
-  <link href="indexStyle.css" rel="stylesheet">
+  <link href="../../indexStyle.css" rel="stylesheet">
 </head>
 
 <body>
@@ -83,13 +84,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link " aria-current="page" href="index.php">Home</a>
+            <a class="nav-link " aria-current="page" href="../startseite/index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link  login-button" href="login.php">Login</a>
+            <a class="nav-link  login-button" href="../login/login.php">Login</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link " aria-current="page" href="produkte.php">Produkte</a>
+            <a class="nav-link " aria-current="page" href="../produkte//produktAuflistung/produkte.php">Produkte</a>
           </li>
 
 
@@ -104,14 +105,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
               <li>
                 <hr class="dropdown-divider login-button">
               </li>
-              <li><a class="dropdown-item" href="produkte.php">Produkte</a></li>
+              <li><a class="dropdown-item" href="../produkte//produktAuflistung/produkte.php">Produkte</a></li>
             </ul>
           </li>
 
         </ul>
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
+          <button class="btn btn-outline-success" type="s ubmit">Search</button>
         </form>
 
       </div>

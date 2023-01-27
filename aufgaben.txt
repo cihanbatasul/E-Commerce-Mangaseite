@@ -1,7 +1,9 @@
-amazon Bewertungssystem verstehen
-Produktseite für jedes Produkt
-Bewertungsfunktion einbauen
-Produktseite Filteroption
-Kategorien für Produktseite
+Amazon Bewertungssystem verstehen
+Kategorien für Produkte
 
-Produktseite -> Componentfunktion statt hardcode oder so
+Produktseite -> Componentfunktion statt hardcode 
+Navbar -> Login PopUp statt direkte Weiterleitung 
+Bessere Animationen auf der Indexseite
+Bessere Syntax
+
+API-Manga Kapitelauflistung mit Beschreibung und Shopseitenverlinkung

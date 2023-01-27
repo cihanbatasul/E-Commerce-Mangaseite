@@ -8,14 +8,14 @@ if (isset($_SESSION["loggedin"]) && ($_SESSION["loggedin"] === true)) {
 }
 
 // Importierung der Klassen "DB" und "ProductController"
-include('./classes/DB.php');
-include('./classes/ProductController.php');
+include(__DIR__ . '/../../classes/DB.php');
+include(__DIR__ . '/../../classes/ProductController.php');
 
 // Erstellen einer neuen DB-Verbindungen anhand des Konstruktors der "DB"-Klasse
 // Wenn die Verbindung fehlgeschlagen ist, gibt das IF-Statement eine Fehlermeldung aus
 try {
 
-  $database = new DB("localhost", "crud", "root", "");
+  $database = new DB("localhost", "crud", "root", "passwordForWebsite");
 } catch (PDOException $e) {
 
   die("ERROR: Verbindung konnte nicht aufgebaut werden. Grund: " . $e->getMessage());
@@ -31,13 +31,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // suche
   if (isset($_POST['search'])) {
     $_SESSION['search'] = $_POST['search'];
-    header("location: search.php");
+    header("location: ../suchergebnisse/search.php");
     exit;
   }
   // top 10 Weiterleitung zur Produktseite
   if (isset($_POST['topRatedButton'])) {
     $_SESSION["product_page_id"] = $_POST['toprated_id'];
-    header("location: ./produktseite.php");
+    header("location: ../produkte/produktSeite/produktseite.php");
     exit;
   }
 }
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Form Aufgabe</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-  <link href="indexStyle.css" rel="stylesheet" type="text/css">
+  <link href="../../indexStyle.css" rel="stylesheet" type="text/css">
   <script defer src="https://kit.fontawesome.com/59e04dcbeb.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
   <script defer src="./SlideIn.js"></script>
@@ -309,7 +309,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       left: 0;
       width: 100%;
       height: 100px;
-      background: url(./pics/wave.png);
+      background: url(../../pics/wave.png);
       background-size: 1000px 100px;
     }
 
@@ -384,7 +384,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <div class="customContainer">
     <nav class="navbar navbar-expand-lg shadow outermost-navdiv">
       <div class=" container-fluid">
-        <a class="navbar-brand fs-5" href="index.php"><img src="./pics/webtoons.png"></a>
+        <a class="navbar-brand fs-5" href="index.php"><img src="../../pics/webtoons.png"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -394,7 +394,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <a class="nav-link" aria-current="page" href="index.php">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="produkte.php">Produkte</a>
+              <a class="nav-link" aria-current="page" href="../produkte/produktAuflistung/produkte.php">Produkte</a>
             </li>
 
 
@@ -404,12 +404,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 Optionen
               </a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item login-button" href="regestrieren.php">Regestrieren</a></li>
-                <li><a class="dropdown-item login-button" href="login.php">Login</a></li>
+                <li><a class="dropdown-item login-button" href="../regestrierung/regestrieren.php">Regestrieren</a></li>
+                <li><a class="dropdown-item login-button" href="../login/login.php">Login</a></li>
                 <li>
                   <hr class="dropdown-divider login-button">
                 </li>
-                <li><a class="dropdown-item" href="produkte.php">Produkte</a></li>
+                <li><a class="dropdown-item" href="../produkte/produktAuflistung/produkte.php">Produkte</a></li>
               </ul>
             </li>
 
@@ -427,19 +427,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php
             if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
             ?>
-              <a class="nav-link warenkorb-button" aria-current="page" href="warenkorb.php"><i class="fa-solid fa-bag-shopping warenkorb-button"></i> <span class="badge bg-primary rounded-pill warenkorb-button">
+              <a class="nav-link warenkorb-button" aria-current="page" href="../warenkorb/warenkorb.php"><i class="fa-solid fa-bag-shopping warenkorb-button"></i> <span class="badge bg-primary rounded-pill warenkorb-button">
                   <?php if (isset($_SESSION['cart']))
                     echo count($_SESSION['cart']);
                   else echo "0" ?></span></a>
 
+              <!-- ProfilButton -->
+              <a class="nav-link" id="profile-button" aria-current="page" href="../profil/profil.php"><i class="fa-solid fa-id-card"></i></a>
+
               <!-- Logout -->
-              <a class="nav-link" id="logout-button" aria-current="page" href="unset_session_variables.php" onclick=""><i class="fa-solid fa-person-through-window fa-lg"></i>
+              <a class="nav-link" id="logout-button" aria-current="page" href="../../unset_session_variables.php" onclick=""><i class="fa-solid fa-person-through-window fa-lg"></i>
 
                 </i></a>
             <?php
             } else {
             ?>
-              <a class="nav-link login-button" id="testLogin" href="login.php" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="This top tooltip is themed via CSS variables."><i class="fa-solid fa-right-from-bracket"></i></a>
+              <a class="nav-link login-button" id="testLogin" href="../login/login.php" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="This top tooltip is themed via CSS variables."><i class="fa-solid fa-right-from-bracket"></i></a>
 
             <?php
             } ?>
@@ -460,7 +463,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <div class="carousel-inner">
           <div class="carousel-item active c-item">
-            <img src="./pics/eren-titan.jpg" class="d-block w-100 c-img" alt="...">
+            <img src="../../pics/eren-titan.jpg" class="d-block w-100 c-img" alt="...">
             <div class="carousel-caption top-0 mt-4  carousel-featured-caption">
               <p class="mt-5 fs-3 text-uppercase">Bald erhältlich!</p>
               <h1 class="display-1 fw-bolder text-capitalize">Attack On Titan</h1>
@@ -468,7 +471,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
           </div>
           <div class="carousel-item c-item">
-            <img src="./pics/haikyu-slider.png" class="d-block w-100 c-img" alt="...">
+            <img src="../../pics/haikyu-slider.png" class="d-block w-100 c-img" alt="...">
             <div class="carousel-caption top-0 mt-4  carousel-featured-caption">
               <p class="mt-5 fs-3 text-uppercase">Volleyball.</p>
               <h1 class="display-1 fw-bolder text-capitalize">Haikyu</h1>
@@ -476,7 +479,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
           </div>
           <div class="carousel-item c-item">
-            <img src="./pics/slide-cowboy.png" class="d-block w-100 c-img" alt="...">
+            <img src="../../pics/slide-cowboy.png" class="d-block w-100 c-img" alt="...">
             <div class="carousel-caption top-0 mt-4 carousel-featured-caption">
               <p class="mt-5 fs-3 text-uppercase">Some representative placeholder content for the first slide.</p>
               <h1 class="display-1 fw-bolder text-capitalize">Cowboy Bebop</h1>
@@ -551,7 +554,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($row['genre'] === 5  && in_array($row['id'], $usedIdsSport) === false && $countSport < 3) {
 
             ?>
-                  <div class="categoryItems  " style="background-image: url('./pics/<?php echo $row['picUrl'] ?>')">
+                  <div class="categoryItems  " style="background-image: url('../../pics/<?php echo $row['picUrl'] ?>')">
                     <h5>
                       <?php echo $row['name'];
                       ?>
@@ -594,7 +597,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($row['genre'] === 1  && in_array($row['id'], $usedIdsAction) === false && $countAction < 3) {
 
             ?>
-                  <div class="categoryItems" style="background-image: url('./pics/<?php echo $row['picUrl'] ?>')">
+                  <div class="categoryItems" style="background-image: url('../../pics/<?php echo $row['picUrl'] ?>')">
                     <h5>
                       <?php echo $row['name'];
                       ?>
@@ -674,7 +677,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <tr class="<?php echo $className ?>">
                       <th scope="row"><?php echo $topRatedCount ?></th>
                       <td><?php echo $row['name'] ?></td>
-                      <td><img class="toprated-img" src="./pics/<?php echo $row['picUrl'] ?>" /></td>
+                      <td><img class="toprated-img" src="../../pics/<?php echo $row['picUrl'] ?>" /></td>
                       <input type="hidden" name="toprated_id" value="<?php echo $row['id'] ?>" />
                       <td><button type="submit" name="topRatedButton">Zur Produktseite</button></td>
                     </tr>

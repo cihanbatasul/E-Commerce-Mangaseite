@@ -12,7 +12,7 @@ include('./classes/UserController.php');
 // Wenn die Verbindung fehlgeschlagen ist, gibt das IF-Statement eine Fehlermeldung aus
 try {
 
-    $database = new DB("localhost", "crud", "root", "");
+    $database = new DB("localhost", "u623864896_crud", "root", "Newcat11new)");
 } catch (PDOException $e) {
 
     die("ERROR: Verbindung konnte nicht aufgebaut werden. Grund: " . $e->getMessage());

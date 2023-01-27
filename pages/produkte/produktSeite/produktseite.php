@@ -4,7 +4,7 @@ session_start();
 $rating = false;
 $rating_pushed = false;
 $rating_error = false;
-
+$_SESSION['productTitleName'] = " ";
 $star_rating_number = 0;
 
 $URL =  $_SERVER['PHP_SELF'];
@@ -15,15 +15,16 @@ if (!isset($_SESSION['loggedin'])) {
 };
 
 // DB und Produktcontroller werden eingebunden
-include('./classes/DB.php');
-include('./classes/ProductController.php');
-include('./classes/UserController.php');
-include('./classes/APIController.php');
+include('../../../classes/DB.php');
+include('../../../classes/ProductController.php');
+
+include('../../../classes/UserController.php');
+include('../../../classes/APIController.php');
 // Erstellen einer neuen DB-Verbindungen anhand des Konstruktors der "DB"-Klasse
 // Wenn die Verbindung fehlgeschlagen ist, gibt das IF-Statement eine Fehlermeldung aus
 try {
 
-  $database = new DB("localhost", "crud", "root", "");
+  $database = new DB("localhost", "crud", "root", "passwordForWebsite");
 } catch (PDOException $e) {
 
   die("ERROR: Verbindung konnte nicht aufgebaut werden. Grund: " . $e->getMessage());
@@ -33,6 +34,7 @@ try {
 $productController = new ProductController($database);
 if (isset($_SESSION["product_page_id"])) {
   $data = $productController->getProductById($_SESSION["product_page_id"]);
+  $_SESSION['productTitleName'] = $data[0]['name'];
   $_SESSION['product_img'] = $data[0]['picUrl'];
 }
 
@@ -121,23 +123,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
   // Suchfunktion
   if (isset($_POST['search'])) {
     $_SESSION['search'] = $_POST['search'];
-    header("location: search.php");
+    header("location: ../../suchergebnisse/search.php");
     exit;
   }
 }
 
 // API
-$apiController = new APIController('https://api.mangadex.org');
-$mangaData = $apiController->requestData("Tokyo卍Revengers");
-$mangaID = $apiController->extractMangaIDs($mangaData);
-$ddd =  $apiController->getMangaChapters('8f8b7cb0-7109-46e8-b12c-0448a6453dfa');
-var_dump($mangaData);
-$mangaDaten = [];
-foreach ($ddd['data'] as $item) {
-  $title = $item['attributes']['title'];
-  $chapter = $item['attributes']['chapter'];
-  echo "Title: $title, Chapter: $chapter\n";
-}
+//$apiController = new APIController('https://api.mangadex.org');
+//$mangaData = $apiController->requestData("Tokyo卍Revengers");
+//$mangaID = $apiController->extractMangaIDs($mangaData);
+//$ddd =  $apiController->getMangaChapters//('8f8b7cb0-7109-46e8-b12c-0448a6453dfa');
+//var_dump($mangaData);
+//$mangaDaten = [];
+//foreach ($ddd['data'] as $item) {
+//  $title = $item['attributes']['title'];
+//  $chapter = $item['attributes']['chapter'];
+//  echo "Title: $title, Chapter: $chapter\n";
+//}
 
 
 ?>
@@ -148,10 +150,15 @@ foreach ($ddd['data'] as $item) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Form Aufgabe</title>
+  <title><?php
+          if (isset($_SESSION['productTitleName']))
+            echo $_SESSION['productTitleName'];
+
+          ?>
+  </title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
   <script src="https://kit.fontawesome.com/59e04dcbeb.js" crossorigin="anonymous"></script>
-  <link href="indexStyle.css" rel="stylesheet">
+  <link href="../../../indexStyle.css" rel="stylesheet">
 </head>
 
 <body>
@@ -218,7 +225,7 @@ foreach ($ddd['data'] as $item) {
       display: flex;
       align-items: center;
       justify-content: center;
-      background-image: url('./pics/<?php echo $_SESSION['product_img'] ?>');
+      background-image: url('../../../pics/<?php echo $_SESSION['product_img'] ?>');
       background-size: cover;
       overflow: hidden;
       border-radius: 20px;
@@ -239,7 +246,7 @@ foreach ($ddd['data'] as $item) {
       content: ' ';
       position: absolute;
       inset: 3px;
-      background-image: url('./pics/<?php echo $_SESSION['product_img'] ?>');
+      background-image: url('../../../pics/<?php echo $_SESSION['product_img'] ?>');
       background-size: cover;
       border-radius: 16px;
     }
@@ -277,14 +284,14 @@ foreach ($ddd['data'] as $item) {
     }
 
     .form-check-input {
-      background-image: url('./pics/star-regular.svg');
+      background-image: url('../../../pics/star-regular.svg');
       background-color: white;
       border-style: none;
 
     }
 
     .form-check-input:checked[type=radio] {
-      background-image: url('./pics/star-solid.svg');
+      background-image: url('../../../pics/star-solid.svg');
       background-color: transparent;
       border-style: hidden;
       border-style: none;
@@ -339,7 +346,7 @@ foreach ($ddd['data'] as $item) {
   <nav class="navbar navbar-expand-lg shadow outermost-div">
     <div class="container-fluid">
       <!-- "Logo" -->
-      <a class="navbar-brand fs-5" href="index.php"><img src="./pics/webtoons.png"></a>
+      <a class="navbar-brand fs-5" href="../../startseite/index.php"><img src="../../../pics/webtoons.png"></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -349,11 +356,11 @@ foreach ($ddd['data'] as $item) {
 
           <!-- Index -->
           <li class="nav-item">
-            <a class="nav-link " aria-current="page" href="index.php">Home</a>
+            <a class="nav-link " aria-current="page" href="../../startseite/index.php">Home</a>
           </li>
           <!-- Produkte -->
           <li class="nav-item">
-            <a class="nav-link " aria-current="page" href="produkte.php">Produkte</a>
+            <a class="nav-link " aria-current="page" href="../produktAuflistung/produkte.php">Produkte</a>
           </li>
 
           <!-- Dropdown mit Links -->
@@ -362,12 +369,12 @@ foreach ($ddd['data'] as $item) {
               Optionen
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item login-button" href="regestrieren.php">Regestrieren</a></li>
-              <li><a class="dropdown-item login-button" href="login.php">Login</a></li>
+              <li><a class="dropdown-item login-button" href="../../regestrierung/regestrieren.php">Regestrieren</a></li>
+              <li><a class="dropdown-item login-button" href="../../login/login.php">Login</a></li>
               <li>
                 <hr class="dropdown-divider login-button">
               </li>
-              <li><a class="dropdown-item" href="produkte.php">Produkte</a></li>
+              <li><a class="dropdown-item" href="../produktAuflistung/produkte.php">Produkte</a></li>
             </ul>
           </li>
 
@@ -382,17 +389,17 @@ foreach ($ddd['data'] as $item) {
           <?php
           if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
           ?>
-            <a class="nav-link warenkorb-button" aria-current="page" href="warenkorb.php"><i class="fa-solid fa-bag-shopping warenkorb-button"></i> <span class="badge bg-primary rounded-pill warenkorb-button">
+            <a class="nav-link warenkorb-button" aria-current="page" href="../../warenkorb/warenkorb.php"><i class="fa-solid fa-bag-shopping warenkorb-button"></i> <span class="badge bg-primary rounded-pill warenkorb-button">
                 <?php if (isset($_SESSION['cart']))
                   echo count($_SESSION['cart']);
                 else echo "0" ?></span></a>
 
             <!-- Logout -->
-            <a class="nav-link" id="logout-button" aria-current="page" href="unset_session_variables.php" onclick=""><i class="fa-solid fa-person-through-window fa-lg"></i></a>
+            <a class="nav-link" id="logout-button" aria-current="page" href="../../../unset_session_variables.php" onclick=""><i class="fa-solid fa-person-through-window fa-lg"></i></a>
           <?php
           } else {
           ?>
-            <a class="nav-link login-button" id="testLogin" href="login.php" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="This top tooltip is themed via CSS variables."><i class="fa-solid fa-right-from-bracket"></i></a>
+            <a class="nav-link login-button" id="testLogin" href="../../login/login.php" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="This top tooltip is themed via CSS variables."><i class="fa-solid fa-right-from-bracket"></i></a>
 
           <?php
           } ?>
@@ -453,7 +460,7 @@ foreach ($ddd['data'] as $item) {
                 <!-- Regestrieren -->
                 <div class="text-center">
 
-                  <p>Noch keinen Account? <a href="regestrieren.php">Regestrieren</a></p>
+                  <p>Noch keinen Account? <a href="../../regestrierung/regestrieren.php">Regestrieren</a></p>
                   <p>oder anmelden mit:</p>
                   <button type="button" class="btn btn-link btn-floating mx-1">
                     <i class="fab fa-facebook-f"></i>
@@ -522,6 +529,7 @@ foreach ($ddd['data'] as $item) {
 
         $product_id = $record['id'];
         $product_name = $record['name'];
+        $productTitleName = $record['name'];
         $product_price = $record['preis'];
         $product_img = $record['picUrl'];
         $_SESSION['product_img'] = $product_img;

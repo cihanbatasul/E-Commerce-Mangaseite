@@ -1,0 +1,157 @@
+* {
+    font-family: 'Rajdhani', sans-serif;
+
+}
+
+
+body {
+    background-color: #ffffff;
+    overflow-x: hidden;
+    font-size: large;
+}
+
+.navbar-brand>img {
+    width: 80px;
+    height: auto;
+}
+
+.nav {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.nav-link {
+    color: #284b63;
+    font-size: 1.15rem;
+}
+
+.nav-link:hover {
+
+    color: #00DC64;
+}
+
+.outermost-navdiv {
+    background-color: #FFFFFF;
+}
+
+.product-card-img {
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
+
+.card {
+
+    max-height: 800px;
+    width: 18rem;
+}
+
+.card:hover {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+.card-title {
+
+    white-space: nowrap;
+}
+
+.card-text {
+    background-color: transparent;
+    display: block;
+    max-height: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.container {
+    background-color: transparent;
+}
+
+.card-body {
+    background-color: transparent;
+}
+
+.card-body-buttons {
+    display: flex;
+    align-items: center;
+
+    justify-content: space-around;
+}
+
+.productimg {
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
+
+.buttons {
+    background: rgb(2, 0, 36);
+    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(56, 168, 24, 1) 0%, rgba(0, 212, 255, 1) 100%);
+    border-style: none;
+}
+
+.buttons:hover,
+.buttons:focus {
+    background-color: #284b63;
+    box-shadow: inset 0 0 0 0.1em;
+}
+
+/* Login Prompt */
+.loginPromptContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Filter */
+
+.dropdown-filter-toggle {
+    background: rgb(2, 0, 36);
+    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(56, 168, 24, 1) 0%, rgba(0, 212, 255, 1) 100%);
+    font-size: large;
+    border-style: none;
+}
+
+.dropdown-filter-toggle:hover {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+.filter_span {
+    font-size: smaller;
+}
+
+.second-navdiv {
+    background-color: #FFFFFF;
+    height: 50px;
+}
+
+.filter-method {
+    display: flex;
+
+}
+
+.filterRow {
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+
+}
+
+.filter-method>.btn-close {
+    margin-left: 1rem;
+}
+
+
+@media (max-width: 768px) {
+
+
+    .card-text {
+        max-height: 0px;
+    }
+
+    .productimg {
+        width: 100%;
+        min-height: 40vw;
+        object-fit: cover;
+    }
+}

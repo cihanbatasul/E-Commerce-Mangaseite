@@ -1,16 +1,16 @@
 <?php
 session_start();
-include('./classes/DB.php');
-include('./classes/ProductController.php');
+include('../../classes/DB.php');
+include('../../classes/ProductController.php');
 
 if (isset($_SESSION["loggedin"]) && ($_SESSION["loggedin"] === false)) {
-  header("location: index.php");
+  header("location: ../startseite/index.php");
   exit;
 }
 
 try {
 
-  $database = new DB("localhost", "crud", "root", "");
+  $database = new DB("localhost", "crud", "root", "passwordForWebsite");
 } catch (PDOException $e) {
 
   die("ERROR: Verbindung konnte nicht aufgebaut werden. Grund: " . $e->getMessage());
@@ -87,7 +87,7 @@ if (isset($_POST['increase']) || isset($_POST['decrease']) || isset($_POST['quan
     // Suchfunktion
     if (isset($_POST['search'])) {
       $_SESSION['search'] = $_POST['search'];
-      header("location: search.php");
+      header("location: ../suchergebnisse/search.php");
       exit;
     }
   }
@@ -106,7 +106,9 @@ if (isset($_POST['increase']) || isset($_POST['decrease']) || isset($_POST['quan
   <title>Form Aufgabe</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
   <script src="https://kit.fontawesome.com/59e04dcbeb.js" crossorigin="anonymous"></script>
-  <link href="indexStyle.css" rel="stylesheet">
+  <script defer src="../../FormValidation.js"></script>
+  <link href="../../indexStyle.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -155,7 +157,7 @@ if (isset($_POST['increase']) || isset($_POST['decrease']) || isset($_POST['quan
   <nav class="navbar navbar-expand-lg shadow outermost-navdiv" ">
     <div class=" container-fluid">
     <!-- "Logo" -->
-    <a class="navbar-brand fs-5" href="index.php"><img src="./pics/webtoons.png"></a>
+    <a class="navbar-brand fs-5" href="../startseite/index.php"><img src="../../pics/webtoons.png"></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -165,17 +167,17 @@ if (isset($_POST['increase']) || isset($_POST['decrease']) || isset($_POST['quan
 
         <!-- Index -->
         <li class="nav-item">
-          <a class="nav-link " aria-current="page" href="index.php">Home</a>
+          <a class="nav-link " aria-current="page" href="../startseite/index.php">Home</a>
         </li>
 
         <!-- Login -->
         <li class="nav-item">
-          <a class="nav-link login-button" href="login.php">Login</a>
+          <a class="nav-link login-button" href="../login/login.php">Login</a>
         </li>
 
         <!-- Produkte -->
         <li class="nav-item">
-          <a class="nav-link " aria-current="page" href="produkte.php">Produkte</a>
+          <a class="nav-link " aria-current="page" href="../produkte/produktAuflistung/produkte.php">Produkte</a>
         </li>
 
         <!-- Warenkorb Button -->
@@ -192,12 +194,12 @@ if (isset($_POST['increase']) || isset($_POST['decrease']) || isset($_POST['quan
             Optionen
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item login-button" href="regestrieren.php">Regestrieren</a></li>
-            <li><a class="dropdown-item login-button" href="login.php">Login</a></li>
+            <li><a class="dropdown-item login-button" href="../regestrierung/regestrieren.php">Regestrieren</a></li>
+            <li><a class="dropdown-item login-button" href="../login/login.php">Login</a></li>
             <li>
               <hr class="dropdown-divider ">
             </li>
-            <li><a class="dropdown-item" href="produkte.php">Produkte</a></li>
+            <li><a class="dropdown-item" href="../produkte/produktAuflistung/produkte.php">Produkte</a></li>
           </ul>
         </li>
       </ul>
@@ -209,7 +211,9 @@ if (isset($_POST['increase']) || isset($_POST['decrease']) || isset($_POST['quan
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" value="">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
-
+        <!-- ProfilButton -->
+        <a class="nav-link" id="profile-button" aria-current="page" href="../profil/profil.php"><i class="fa-solid fa-id-card"></i></a>
+        <!-- Logout -->
         <a class="nav-link" id="logout-button" aria-current="page" href="unset_session_variables.php" onclick=""><i class="fa-solid fa-person-through-window fa-lg"></i></a>
       </div>
     </div>
@@ -240,7 +244,7 @@ if (isset($_POST['increase']) || isset($_POST['decrease']) || isset($_POST['quan
                           <hr class="my-4">
                           <div class="row mb-4 d-flex justify-content-between align-items-center">
                             <div class="col-md-2 col-lg-2 col-xl-2">
-                              <img src="pics/<?php echo $item['imgUrl'] ?> " class="img-fluid rounded-3" alt="">
+                              <img src="../../pics/<?php echo $item['imgUrl'] ?> " class="img-fluid rounded-3" alt="">
                             </div>
 
                             <div class="col-md-3 col-lg-3 col-xl-3">
@@ -280,7 +284,7 @@ if (isset($_POST['increase']) || isset($_POST['decrease']) || isset($_POST['quan
                     <hr class="my-4">
 
                     <div class="pt-5">
-                      <h6 class="mb-0"><a href="produkte.php" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>
+                      <h6 class="mb-0"><a href="../produkte/produktAuflistung/produkte.php" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Zurück zum Shop</a></h6>
                     </div>
                   </div>
                 </div>
@@ -321,7 +325,7 @@ if (isset($_POST['increase']) || isset($_POST['decrease']) || isset($_POST['quan
                       <h5 id="total-price"></h5>
                     </div>
 
-                    <button type="button" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark"><a href="regestrieren.php">Regestrieren</a></button>
+                    <button type="button" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark"><a href="../regestrierung/regestrieren.php">Regestrieren</a></button>
 
                   </div>
                 </div>

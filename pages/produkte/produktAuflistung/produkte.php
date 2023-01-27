@@ -9,14 +9,16 @@ $numRating;
 $filter_method;
 
 // Importierung der Klassen "DB" und "ProductController"
-include('./classes/DB.php');
-include('./classes/ProductController.php');
-include('./classes/UserController.php');
+include(__DIR__ . '/../../../classes/DB.php');
+include(__DIR__ . '/../../../classes/ProductController.php');
+
+include('../../../classes/UserController.php');
+include('../../../classes/APIController.php');
 // Erstellen einer neuen DB-Verbindungen anhand des Konstruktors der "DB"-Klasse
 // Wenn die Verbindung fehlgeschlagen ist, gibt das IF-Statement eine Fehlermeldung aus
 try {
 
-  $database = new DB("localhost", "crud", "root", "");
+  $database = new DB("localhost", "crud", "root", "passwordForWebsite");
 } catch (PDOException $e) {
 
   die("ERROR: Verbindung konnte nicht aufgebaut werden. Grund: " . $e->getMessage());
@@ -78,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
   // Suchfunktion
   if (isset($_POST['search'])) {
     $_SESSION['search'] = $_POST['search'];
-    header("location: search.php");
+    header("location: ../../suchergebnisse/search.php");
     exit;
   }
 
@@ -86,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
   if (isset($_POST['product_page_name']) || isset($_POST['product-pic'])) {
     $_SESSION["product_page_id"] = $_POST['product_page_name'];
     echo ($_SESSION["product_page_id"]);
-    header("Location: ./produktseite.php");
+    header("Location: ../produktSeite/produktseite.php");
     exit;
   }
 
@@ -146,7 +148,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
 
   // Nach Genre Filter
 
+  if ($_POST['filter'] === "genre") {
 
+    usort($data, function ($a, $b) {
+
+      if ($a['genre'] == $b['genre']) {
+        return 0;
+      }
+      return ($a['genre'] > $b['genre']) ? -1 : 1;
+    });
+  }
+}
+
+if (isset($_POST['filter'])) {
+
+  switch ($_POST['filter']) {
+
+    case 'sport':
+      $_SESSION['filter-genre'] = 'sport';
+      break;
+    case 'fantasy':
+      $_SESSION['filter-genre'] = 'fantasy';
+      break;
+    case 'action':
+      $_SESSION['filter-genre'] = 'action';
+      break;
+  }
 }
 
 
@@ -161,177 +188,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
   <title>Form Aufgabe</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
   <script src="https://kit.fontawesome.com/59e04dcbeb.js" crossorigin="anonymous"></script>
-  <link href="indexStyle.css" rel="stylesheet">
+  <link href="../../../indexStyle.css" rel="stylesheet">
+  <link href="produkte.css" rel="stylesheet">
 </head>
 
 <body>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=EB+Garamond&family=Rajdhani:wght@300;400&display=swap');
-
-    * {
-      font-family: 'Rajdhani', sans-serif;
-
-    }
-
-
-    body {
-      background-color: #ffffff;
-      overflow-x: hidden;
-      font-size: large;
-    }
-
-    .navbar-brand>img {
-      width: 80px;
-      height: auto;
-    }
-
-    .nav {
-      padding-top: 0px;
-      padding-bottom: 0px;
-    }
-
-    .nav-link {
-      color: #284b63;
-      font-size: 1.15rem;
-    }
-
-    .nav-link:hover {
-
-      color: #00DC64;
-    }
-
-    .outermost-navdiv {
-      background-color: #FFFFFF;
-    }
-
-    .product-card-img {
-      width: 100%;
-      height: 15vw;
-      object-fit: cover;
-    }
-
-    .card {
-
-      max-height: 800px;
-      width: 18rem;
-    }
-
-    .card:hover {
-      box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-    }
-
-    .card-title {
-
-      white-space: nowrap;
-    }
-
-    .card-text {
-      background-color: transparent;
-      display: block;
-      max-height: 240px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .container {
-      background-color: transparent;
-    }
-
-    .card-body {
-      background-color: transparent;
-    }
-
-    .card-body-buttons {
-      display: flex;
-      align-items: center;
-
-      justify-content: space-around;
-    }
-
-    .productimg {
-      width: 100%;
-      height: 15vw;
-      object-fit: cover;
-    }
-
-    .buttons {
-      background: rgb(2, 0, 36);
-      background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(56, 168, 24, 1) 0%, rgba(0, 212, 255, 1) 100%);
-      border-style: none;
-    }
-
-    .buttons:hover,
-    .buttons:focus {
-      background-color: #284b63;
-      box-shadow: inset 0 0 0 0.1em;
-    }
-
-    /* Login Prompt */
-    .loginPromptContainer {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Filter */
-
-    .dropdown-filter-toggle {
-      background: rgb(2, 0, 36);
-      background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(56, 168, 24, 1) 0%, rgba(0, 212, 255, 1) 100%);
-      font-size: large;
-      border-style: none;
-    }
-
-    .dropdown-filter-toggle:hover {
-      box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-    }
-
-    .filter_span {
-      font-size: smaller;
-    }
-
-    .second-navdiv {
-      background-color: #FFFFFF;
-      height: 50px;
-    }
-
-    .filter-method {
-      display: flex;
-
-    }
-
-    .filterRow {
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 2rem;
-
-    }
-
-    .filter-method>.btn-close {
-      margin-left: 1rem;
-    }
-
-
-    @media (max-width: 768px) {
-
-
-      .card-text {
-        max-height: 0px;
-      }
-
-      .productimg {
-        width: 100%;
-        min-height: 40vw;
-        object-fit: cover;
-      }
-    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
   <nav class="navbar navbar-expand-lg shadow outermost-navdiv"">
     <div class=" container-fluid">
     <!-- "Logo" -->
-    <a class="navbar-brand fs-5" href="index.php"><img src="./pics/webtoons.png"></a>
+    <a class="navbar-brand fs-5" href="../../startseite/index.php"><img src="../../../pics/webtoons.png"></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -339,11 +209,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <!-- Index -->
         <li class="nav-item">
-          <a class="nav-link " aria-current="page" href="index.php">Home</a>
+          <a class="nav-link " aria-current="page" href="../../startseite/index.php">Home</a>
         </li>
         <!-- Produkte -->
         <li class="nav-item">
-          <a class="nav-link " aria-current="page" href="produkte.php">Produkte</a>
+          <a class="nav-link " aria-current="page" href="../../produkte/produktAuflistung/produkte.php">Produkte</a>
         </li>
 
         <!-- Dropdown mit Links -->
@@ -352,8 +222,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
             Optionen
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item login-button" href="regestrieren.php">Regestrieren</a></li>
-            <li><a class="dropdown-item login-button" href="login.php">Login</a></li>
+            <li><a class="dropdown-item login-button" href="../../regestrierung/regestrieren.php">Regestrieren</a></li>
+            <li><a class="dropdown-item login-button" href="../../login/login.php">Login</a></li>
             <li>
               <hr class="dropdown-divider login-button">
             </li>
@@ -372,19 +242,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
         <?php
         if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
         ?>
-          <a class="nav-link warenkorb-button" aria-current="page" href="warenkorb.php"><i class="fa-solid fa-bag-shopping warenkorb-button"></i> <span class="badge bg-primary rounded-pill warenkorb-button">
+          <a class="nav-link warenkorb-button" aria-current="page" href="../../warenkorb/warenkorb.php"><i class="fa-solid fa-bag-shopping warenkorb-button"></i> <span class="badge bg-primary rounded-pill warenkorb-button">
               <?php if (isset($_SESSION['cart']))
                 echo count($_SESSION['cart']);
               else echo "0" ?></span></a>
 
+          <!-- ProfilButton -->
+          <a class="nav-link" id="profile-button" aria-current="page" href="../../profil/profil.php"><i class="fa-solid fa-id-card"></i></a>
           <!-- Logout -->
-          <a class="nav-link" id="logout-button" aria-current="page" href="unset_session_variables.php" onclick=""><i class="fa-solid fa-person-through-window fa-lg"></i>
+          <a class="nav-link" id="logout-button" aria-current="page" href="../../../unset_session_variables.php" onclick=""><i class="fa-solid fa-person-through-window fa-lg"></i>
 
             </i></a>
         <?php
         } else {
         ?>
-          <a class="nav-link login-button" id="testLogin" href="login.php" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="This top tooltip is themed via CSS variables."><i class="fa-solid fa-right-from-bracket"></i></a>
+          <a class="nav-link login-button" id="testLogin" href="../../login/login.php" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="This top tooltip is themed via CSS variables."><i class="fa-solid fa-right-from-bracket"></i></a>
 
         <?php
         } ?>
@@ -544,7 +416,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
               <ul class="dropdown-menu">
                 <li>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="filter" id="filter_action" value="action">
+                    <input class="form-check-input" type="radio" name="filter" id="filter_action" value="1">
                     <label class="form-check-label" for="filter_action">
                       Action
                     </label>
@@ -552,7 +424,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
                 </li>
                 <li>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="filter" id="filter_sport" value="sport">
+                    <input class="form-check-input" type="radio" name="filter" id="filter_sport" value="5">
                     <label class="form-check-label" for="filter_sport">
                       Sport
                     </label>
@@ -560,7 +432,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
                 </li>
                 <li>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="filter" id="filter_fantasy" value="fantasy">
+                    <input class="form-check-input" type="radio" name="filter" id="filter_fantasy" value="4">
                     <label class="form-check-label" for="filter_fantasy">
                       Fantasy
                     </label>
@@ -594,6 +466,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
 
         foreach ($data as $record) {
 
+
+
+
+
+
           $product_id = $record['id'];
           $product_name = $record['name'];
           $product_price = $record['preis'];
@@ -609,7 +486,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
             <form method="post">
               <div class="card  p-3 mb-5 bg-body rounded">
                 <!--<button type="submit" name="product-pic"><img src="pics/// echo $record['picUrl'] " class="card-img-top product-card-img" alt="..."></button><-->
-                <input type="image" src="pics/<?php echo $record['picUrl'] ?>" alt="submit" name="product-pic" class="productimg" />
+                <input type="image" src="../../../pics/<?php echo $record['picUrl'] ?>" alt="submit" name="product-pic" class="productimg" />
                 <div class="card-body ">
                   <h5 class="card-title"><?php echo $record['name']; ?></h5>
                   <input type="hidden" name="name" value="<?php echo $product_name ?>">
@@ -694,6 +571,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
     </div>
 
   <?php
+
+
         }
 
   ?>

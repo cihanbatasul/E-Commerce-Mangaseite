@@ -5,13 +5,14 @@ session_start();
 $URL =  $_SERVER['PHP_SELF'];
 
 // Importierung der Klassen "DB" und "ProductController"
-include('./classes/DB.php');
-include('./classes/ProductController.php');
-include('./classes/UserController.php');
+include(__DIR__ . '/../../classes/DB.php');
+include(__DIR__ . '/../../classes/ProductController.php');
+include('../../classes/UserController.php');
+
 
 try {
 
-    $database = new DB("localhost", "crud", "root", "");
+    $database = new DB("localhost", "crud", "root", "passwordForWebsite");
 } catch (PDOException $e) {
 
     die("ERROR: Verbindung konnte nicht aufgebaut werden. Grund: " . $e->getMessage());
@@ -19,13 +20,16 @@ try {
 
 $productController = new ProductController($database);
 
-$searchResult = $productController->getProductBySearch($_SESSION['search']);
+if (isset($_SESSION['search'])) {
+    $searchResult = $productController->getProductBySearch($_SESSION['search']);
+}
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST['id'])) {
         $_SESSION['product_page_id'] = $_POST['id'];
-        header("location: ./produktseite.php");
+        header("location: ../produkte/produktSeite/produktseite.php");
         exit;
     }
 
@@ -48,7 +52,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Form Aufgabe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/59e04dcbeb.js" crossorigin="anonymous"></script>
-    <link href="indexStyle.css" rel="stylesheet">
+    <script defer src="../../FormValidation.js"></script>
+    <link href="../../indexStyle.css" rel="stylesheet">
 </head>
 
 <body>
@@ -211,7 +216,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <nav class="navbar navbar-expand-lg shadow outermost-navdiv"">
     <div class=" container-fluid">
         <!-- "Logo" -->
-        <a class="navbar-brand fs-5" href="index.php"><img src="./pics/webtoons.png"></a>
+        <a class="navbar-brand fs-5" href="index.php"><img src="../../pics/webtoons.png"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -219,11 +224,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <!-- Index -->
                 <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="index.php">Home</a>
+                    <a class="nav-link " aria-current="page" href="../startseite/index.php">Home</a>
                 </li>
                 <!-- Produkte -->
                 <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="produkte.php">Produkte</a>
+                    <a class="nav-link " aria-current="page" href="../produkte/produktAuflistung/produkte.php">Produkte</a>
                 </li>
 
                 <!-- Dropdown mit Links -->
@@ -232,39 +237,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         Optionen
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item login-button" href="regestrieren.php">Regestrieren</a></li>
-                        <li><a class="dropdown-item login-button" href="login.php">Login</a></li>
+                        <li><a class="dropdown-item login-button" href="../regestrierung/regestrieren.php">Regestrieren</a></li>
+                        <li><a class="dropdown-item login-button" href="../login/login.php">Login</a></li>
                         <li>
                             <hr class="dropdown-divider login-button">
                         </li>
-                        <li><a class="dropdown-item" href="produkte.php">Produkte</a></li>
+                        <li><a class="dropdown-item" href="../produkte/produktAuflistung/produkte.php">Produkte</a></li>
                     </ul>
                 </li>
 
             </ul>
             <!-- Suchfunktion -->
             <div class="nav-rightside" style="display: flex;">
-                <form class="d-flex" role="search" method="post">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" value="">
+                <form class="d-flex needs-validation" role="search" method="post" novalidate>
+                    <input class="form-control me-2 searchInput" type="search" placeholder="Search" aria-label="Search" name="search" value="">
                     <button class="btn btn-outline-success" type="submit">Search</button>
+                    <div class="invalid-feedback">
+                        Bitte gib etwas ein.
+                    </div>
                 </form>
                 <!-- Warenkorb -->
                 <?php
                 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
                 ?>
-                    <a class="nav-link warenkorb-button" aria-current="page" href="warenkorb.php"><i class="fa-solid fa-bag-shopping warenkorb-button"></i> <span class="badge bg-primary rounded-pill warenkorb-button">
+                    <a class="nav-link warenkorb-button" aria-current="page" href="../warenkorb/warenkorb.php"><i class="fa-solid fa-bag-shopping warenkorb-button"></i> <span class="badge bg-primary rounded-pill warenkorb-button">
                             <?php if (isset($_SESSION['cart']))
                                 echo count($_SESSION['cart']);
                             else echo "0" ?></span></a>
 
                     <!-- Logout -->
-                    <a class="nav-link" id="logout-button" aria-current="page" href="unset_session_variables.php" onclick=""><i class="fa-solid fa-person-through-window fa-lg"></i>
+                    <a class="nav-link" id="logout-button" aria-current="page" href="../../unset_session_variables.php" onclick=""><i class="fa-solid fa-person-through-window fa-lg"></i>
 
                         </i></a>
                 <?php
                 } else {
                 ?>
-                    <a class="nav-link login-button" id="testLogin" href="login.php" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="This top tooltip is themed via CSS variables."><i class="fa-solid fa-right-from-bracket"></i></a>
+                    <a class="nav-link login-button" id="testLogin" href="../login/login.php" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="This top tooltip is themed via CSS variables."><i class="fa-solid fa-right-from-bracket"></i></a>
 
                 <?php
                 } ?>
@@ -304,7 +312,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <th scope="row"><?php echo $row['id'] ?>
                                     </th>
                                     <td><?php echo $row['name'] ?></td>
-                                    <td><img class="img" src="./pics/<?php echo $row['picUrl'] ?>" /></td>
+                                    <td><img class="img" src="../../pics/<?php echo $row['picUrl'] ?>" /></td>
                                     <input type="hidden" name="id" value="<?php echo $row['id'] ?>" />
 
                                     <td> <button type="submit" href="">Zur Produktseite</button></td>

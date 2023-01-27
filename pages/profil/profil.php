@@ -17,15 +17,16 @@ if (isset($_SESSION["loggedin"]) && ($_SESSION["loggedin"] === false)) {
 }
 
 // DB und Produktcontroller werden eingebunden
-include('./classes/DB.php');
-include('./classes/ProductController.php');
-include('./classes/UserController.php');
+include(__DIR__ . '/../../classes/DB.php');
+include(__DIR__ . '/../../classes/ProductController.php');
+
+include('../../classes/UserController.php');
 
 // Erstellen einer neuen DB-Verbindungen anhand des Konstruktors der "DB"-Klasse
 // Wenn die Verbindung fehlgeschlagen ist, gibt das IF-Statement eine Fehlermeldung aus
 try {
 
-    $database = new DB("localhost", "crud", "root", "");
+    $database = new DB("localhost", "crud", "root", "passwordForWebsite");
 } catch (PDOException $e) {
 
     die("ERROR: Verbindung konnte nicht aufgebaut werden. Grund: " . $e->getMessage());
@@ -92,7 +93,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
     <title>Form Aufgabe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/59e04dcbeb.js" crossorigin="anonymous"></script>
-    <link href="indexStyle.css" rel="stylesheet">
+    <link href="../../indexStyle.css" rel="stylesheet">
+    <link href="profil.css" rel="stylesheet">
 </head>
 
 <body>
@@ -100,186 +102,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
-
-        * {
-            font-family: 'EB Garamond', serif;
-
-        }
-
-        .rating {
-            margin-top: 5rem;
-        }
-
-        html {
-            height: 100%;
-        }
-
-
-
-        body {
-            background-color: #ffffff;
-            overflow-x: hidden;
-            font-size: large;
-            min-height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .navbar-brand>img {
-            width: 80px;
-            height: auto;
-        }
-
-        .nav {
-            padding-top: 0px;
-            padding-bottom: 0px;
-        }
-
-        .nav-link {
-            color: #284b63;
-            font-size: 1.15rem;
-        }
-
-        .nav-link:hover {
-
-            color: #00DC64;
-        }
-
-        .outermost-navdiv {
-            background-color: #FFFFFF;
-        }
-
-
-        .pic-col {
-            position: relative;
-            width: 400px;
-            max-width: 400px;
-            height: 600px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-image: url('./pics/<?php echo $_SESSION['product_img'] ?>');
-            background-size: cover;
-            overflow: hidden;
-            border-radius: 20px;
-            box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
-
-        }
-
-        .pic-col::before {
-            content: ' ';
-            position: absolute;
-            width: 650px;
-            height: 140%;
-            background: linear-gradient(#457b9d, #e63946);
-            animation: animate 4s linear infinite;
-        }
-
-        .pic-col::after {
-            content: ' ';
-            position: absolute;
-            inset: 3px;
-            background-image: url('./pics/<?php echo $_SESSION['product_img'] ?>');
-            background-size: cover;
-            border-radius: 16px;
-        }
-
-        @keyframes animate {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(160deg);
-            }
-        }
-
-        .product_img {
-
-            width: 100%;
-            height: auto;
-            border-style: solid;
-            border-radius: 20px;
-            box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
-
-        }
-
-        /* bewertung */
-        .user_rating {
-            display: flex;
-
-        }
-
-        .user_rating>a {
-            padding: 1rem;
-            margin-left: 3rem;
-        }
-
-        .form-check-input {
-            background-image: url('./pics/star-regular.svg');
-            background-color: white;
-            border-style: none;
-
-        }
-
-        .form-check-input:checked[type=radio] {
-            background-image: url('./pics/star-solid.svg');
-            background-color: transparent;
-            border-style: hidden;
-            border-style: none;
-        }
-
-
-
-
-        /** Footer **/
-        footer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #0496ff;
-            margin-top: auto;
-        }
-
-        .social-media-icons>ul {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-
-        }
-
-        .social-media-icons>ul>li {
-            color: white;
-            list-style: none;
-            margin: 1rem;
-            padding: 2rem;
-        }
-
-        .social-media-icons>ul>li:hover {
-
-            cursor: pointer;
-            transition: all 1s;
-            transform: translatey(-20%);
-
-        }
-
-        .fa-brands {
-            font-size: 2em;
-        }
-
-
-        /* Login Prompt */
-        .loginPromptContainer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
     </style>
 
     <nav class="navbar navbar-expand-lg shadow outermost-div">
         <div class="container-fluid">
             <!-- "Logo" -->
-            <a class="navbar-brand fs-5" href="index.php"><img src="./pics/webtoons.png"></a>
+            <a class="navbar-brand fs-5" href="index.php"><img src="../../pics/webtoons.png"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -289,11 +117,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
 
                     <!-- Index -->
                     <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="index.php">Home</a>
+                        <a class="nav-link " aria-current="page" href="../startseite/index.php">Home</a>
                     </li>
                     <!-- Produkte -->
                     <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="produkte.php">Produkte</a>
+                        <a class="nav-link " aria-current="page" href="../produkte/produktAuflistung/produkte.php">Produkte</a>
                     </li>
 
                     <!-- Dropdown mit Links -->
@@ -302,12 +130,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
                             Optionen
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item login-button" href="regestrieren.php">Regestrieren</a></li>
-                            <li><a class="dropdown-item login-button" href="login.php">Login</a></li>
+                            <li><a class="dropdown-item login-button" href="../regestrierung/regestrieren.php">Regestrieren</a></li>
+                            <li><a class="dropdown-item login-button" href="../login/login.php">Login</a></li>
                             <li>
                                 <hr class="dropdown-divider login-button">
                             </li>
-                            <li><a class="dropdown-item" href="produkte.php">Produkte</a></li>
+                            <li><a class="dropdown-item" href="../produkte/produktAuflistung/produkte.php">Produkte</a></li>
                         </ul>
                     </li>
 
@@ -321,13 +149,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
                 <?php
                 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
                 ?>
-                    <a class="nav-link warenkorb-button" aria-current="page" href="warenkorb.php"><i class="fa-solid fa-bag-shopping warenkorb-button"></i> <span class="badge bg-primary rounded-pill warenkorb-button">
+                    <a class="nav-link warenkorb-button" aria-current="page" href="../warenkorb/warenkorb.php"><i class="fa-solid fa-bag-shopping warenkorb-button"></i> <span class="badge bg-primary rounded-pill warenkorb-button">
                             <?php if (isset($_SESSION['cart']))
                                 echo count($_SESSION['cart']);
                             else echo "0" ?></span></a>
 
                     <!-- Logout -->
-                    <a class="nav-link" id="logout-button" aria-current="page" href="unset_session_variables.php" onclick=""><i class="fa-solid fa-person-through-window fa-lg"></i></a>
+                    <a class="nav-link" id="logout-button" aria-current="page" href="../../unset_session_variables.php" onclick=""><i class="fa-solid fa-person-through-window fa-lg"></i></a>
                 <?php
                 } else {
                 ?>
@@ -424,14 +252,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
 
 
 
+    <div class="container">
+        <div class="row reihe">
+            <div class="col-4  und">
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus enim laborum repellendus. Ducimus harum quisquam ipsam ab, atque illum beatae voluptatem dolorum perferendis, in doloribus, maxime praesentium id. Ea, fuga.
+                    Enim vero veniam, error necessitatibus repudiandae iste dolores ipsa neque asperiores. Voluptatum velit tenetur quos obcaecati nisi veritatis magnam! Dolor, illum molestiae aliquid inventore ipsa veniam ipsum nobis labore adipisci!
+                    Sunt beatae obcaecati eligendi ex vitae? Autem voluptate id voluptatem vero neque unde dolorem, eligendi numquam optio excepturi iusto ipsa cum cumque nemo, architecto totam iure odit deserunt nihil quidem?
+                    Consectetur, hic provident! Error excepturi nihil, distinctio quasi veritatis ullam facere quos quia perferendis hic, exercitationem architecto consectetur cum delectus iusto sint deleniti ducimus nulla consequuntur commodi. Voluptatibus, et quis!
+                    Voluptas aut ex necessitatibus ullam veniam, eius commodi cupiditate, expedita quidem quis dignissimos excepturi deserunt nostrum provident. Dicta eos, suscipit explicabo dolorem repudiandae nobis beatae. Accusantium facere unde atque quia.</p>
 
-    <div class="row">
-        <div class="col acc-menü">
-            <h4>Hallo <?php echo $user[0]['vorname'] ?></h4>
 
+            </div>
+            <div class="col-8  und">
+                <p>
+                    <?php echo $user[0]['username']  ?>
+                </p>
+
+                <button class="btn btn-primary">Nachricht senden</button>
+                <button class="btn btn-primary">Kontaktanfrage senden</button>
+                <button class="btn btn-primary">Iwas senden</button>
+            </div>
         </div>
-        <div class="col acc-menü-content">
-
+        <div class="row reihe2">
+            <div class="col-4 und2">
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus enim laborum repellendus. Ducimus harum quisquam ipsam ab, atque illum beatae voluptatem dolorum perferendis, in doloribus, maxime praesentium id. Ea, fuga.
+                    Enim vero veniam, error necessitatibus repudiandae iste dolores ipsa neque asperiores. Voluptatum velit tenetur quos obcaecati nisi veritatis magnam! Dolor, illum molestiae aliquid inventore ipsa veniam ipsum nobis labore adipisci!
+                    Sunt beatae obcaecati eligendi ex vitae? Autem voluptate id voluptatem vero neque unde dolorem, eligendi numquam optio excepturi iusto ipsa cum cumque nemo, architecto totam iure odit deserunt nihil quidem?
+                    Consectetur, hic provident! Error excepturi nihil, distinctio quasi veritatis ullam facere quos quia perferendis hic, exercitationem architecto consectetur cum delectus iusto sint deleniti ducimus nulla consequuntur commodi. Voluptatibus, et quis!
+                    Voluptas aut ex necessitatibus ullam veniam, eius commodi cupiditate, expedita quidem quis dignissimos excepturi deserunt nostrum provident. Dicta eos, suscipit explicabo dolorem repudiandae nobis beatae. Accusantium facere unde atque quia.</p>
+            </div>
+            <div class="col-8 und2">
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus enim laborum repellendus. Ducimus harum quisquam ipsam ab, atque illum beatae voluptatem dolorum perferendis, in doloribus, maxime praesentium id. Ea, fuga.
+                    Enim vero veniam, error necessitatibus repudiandae iste dolores ipsa neque asperiores. Voluptatum velit tenetur quos obcaecati nisi veritatis magnam! Dolor, illum molestiae aliquid inventore ipsa veniam ipsum nobis labore adipisci!
+                    Sunt beatae obcaecati eligendi ex vitae? Autem voluptate id voluptatem vero neque unde dolorem, eligendi numquam optio excepturi iusto ipsa cum cumque nemo, architecto totam iure odit deserunt nihil quidem?
+                    Consectetur, hic provident! Error excepturi nihil, distinctio quasi veritatis ullam facere quos quia perferendis hic, exercitationem architecto consectetur cum delectus iusto sint deleniti ducimus nulla consequuntur commodi. Voluptatibus, et quis!
+                    Voluptas aut ex necessitatibus ullam veniam, eius commodi cupiditate, expedita quidem quis dignissimos excepturi deserunt nostrum provident. Dicta eos, suscipit explicabo dolorem repudiandae nobis beatae. Accusantium facere unde atque quia.</p>
+            </div>
         </div>
     </div>
 
@@ -457,24 +313,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_POST['submit'])) {
     <script>
         // Login Button wird entfernt, wenn User eingeloggt ist
 
-        const loginButton = document.querySelectorAll('.login-button');
-
-
-
+        const loginButton = document.querySelectorAll(' .login-button');
         if (<?php echo $_SESSION['loggedin'] === true ?>) {
-
             for (let i = 0; i < loginButton.length; i++) {
                 loginButton[i].hidden = true;
             }
-
-
         }
         if (<?php echo $loginStatus ?> === false) {
-
             for (let i = 0; i < loginButton.length; i++) {
                 loginButton[i].hidden = false;
             }
-
         }
     </script>
 
